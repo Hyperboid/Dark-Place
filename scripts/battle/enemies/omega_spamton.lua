@@ -11,6 +11,7 @@ function OmegaSpamton:init()
     -- Enemy health
     self.max_health = 15000
     self.health = 15000
+    self.lowestHP = self.health
     -- Enemy attack (determines bullet damage)
     self.attack = 180
     -- Enemy defense (usually 0)
@@ -65,18 +66,20 @@ function OmegaSpamton:onAct(battler, name)
 		Assets.playSound("laz_c")
 		
         -- Act text (since it's a list, multiple textboxes)
-        self.attack = self.attack - 15
+        local attackLowered = self.attack > 10
+        self.attack = math.max(10, self.attack - 15)
 		self.defense = self.defense - 30
 		self.check = "AT "..self.attack.." DF "..self.defense.."\n* Final boss (Not of Dark Place)."
         return {
-            "* Spamton was downgraded![wait:5]\n* -15 attack & -30 defense!",
+            attackLowered and "* Spamton was downgraded![wait:5]\n* -15 attack & -30 defense!"
+            or "* Spamton was downgraded![wait:5]\n* -30 defense![wait:5]\nAttack can't go any lower.",
         }
     elseif name == "Standard" then --X-Action
         -- Give the enemy 50% mercy
         self:addMercy(1)
         return "* "..battler.chara:getName().." pleaded for mercy!"
     end
-
+    
     -- If the act is none of the above, run the base onAct function
     -- (this handles the Check act)
     return super.onAct(self, battler, name)

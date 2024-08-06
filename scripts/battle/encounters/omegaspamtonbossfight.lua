@@ -5,6 +5,7 @@ function OmegaSpamtonBossfight:init()
 
     -- Text displayed at the bottom of the screen at the start of the encounter
     self.text = "* Omega Spamton emerges!"
+	self.progress = 0
 
     -- Battle music ("battle" is rude buster)
     self.music = "almighty"
@@ -69,8 +70,30 @@ function OmegaSpamtonBossfight:beforeStateChange(old, new)
 	end
 	
 	end
-	
+
+	if new == "ENEMYDIALOGUE" then
+		local cutscene = Game.battle:startCutscene("omegaspamton_fight.talk")
+		cutscene:after(function()
+            Game.battle:setState("DIALOGUEEND")
+		end)
+	end
+	if new == "ACTIONS" and self.progress >= 200 then
+		local spamton = Game.battle.enemies[1]
+		if spamton ~= nil then
+			spamton.lowestHP = math.min(spamton.health, spamton.lowestHP)
+			if spamton.lastHealed ~= Game.battle.turn_count then
+				spamton:heal(spamton.max_health)
+				spamton.lastHealed = Game.battle.turn_count
+			end
+		end
+	end
 	return override
+end
+
+function OmegaSpamtonBossfight:skip()
+	local spamton = Game.battle.enemies[1]
+	spamton.defense = spamton.defense - 30
+	spamton.attack = spamton.attack - 15
 end
 
 return OmegaSpamtonBossfight
