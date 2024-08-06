@@ -31,6 +31,7 @@ function Mod:init()
     MUSIC_VOLUMES["deltarune/spamton_neo_mix_ex_wip"] = 0.7
     MUSIC_VOLUMES["marble_ft_ultra"] = 0.8
     MUSIC_VOLUMES["beasts"] = 0.7
+    MUSIC_VOLUMES["almighty"] = 0.45
 	
 	CARD_LAYERS = {
 		["bottom"] = -1000,
